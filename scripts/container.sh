@@ -8,5 +8,3 @@ cp ./config.yaml ./docker/
 docker build -t getclass/user:latest docker/
 
 docker push getclass/user:latest
-
-kubectl create -f deployment.yaml

@@ -8,7 +8,7 @@ import (
 	jaegerConf "github.com/uber/jaeger-client-go/config"
 	jaegerLog "github.com/uber/jaeger-client-go/log"
 	"github.com/uber/jaeger-lib/metrics"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 	"log"
 	"net/http"
 	"os"
@@ -18,11 +18,11 @@ func main() {
 
 	cfg := jaegerConf.Configuration{
 		ServiceName: "go-chat",
-		Sampler:     &jaegerConf.SamplerConfig{
+		Sampler: &jaegerConf.SamplerConfig{
 			Type:  jaeger.SamplerTypeConst,
 			Param: 1,
 		},
-		Reporter:    &jaegerConf.ReporterConfig{
+		Reporter: &jaegerConf.ReporterConfig{
 			LogSpans: false,
 		},
 	}

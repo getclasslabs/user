@@ -10,8 +10,8 @@ import (
 
 type controller func(http.ResponseWriter, *http.Request)
 
-type Infos struct{
-	Span opentracing.Span
+type Infos struct {
+	Span   opentracing.Span
 	Tracer opentracing.Tracer
 }
 

@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  user:
+    image: getclass/user:latest
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        order: start-first
+    networks:
+      main:
+        aliases:
+          - user
+networks:
+  main:
+    external: true

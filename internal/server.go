@@ -1,10 +1,10 @@
 package internal
 
 import (
-"github.com/getclasslabs/user/internal/handler"
-"github.com/getclasslabs/user/tools"
-"github.com/gorilla/mux"
-"net/http"
+	"github.com/getclasslabs/user/internal/handler"
+	"github.com/getclasslabs/user/tools"
+	"github.com/gorilla/mux"
+	"net/http"
 )
 
 type Server struct {
