@@ -1,5 +1,11 @@
 package kong
 
-type kong struct {
+import "net/http"
 
+type Kong struct {
+
+}
+
+func CreateUser(){
+	http.Post(main.config)
 }

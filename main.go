@@ -41,7 +41,6 @@ func main() {
 	opentracing.SetGlobalTracer(tracer)
 	defer closer.Close()
 
-	var config config.Config
 
 	f, err := os.Open("config.yaml")
 	if err != nil {
@@ -50,7 +49,7 @@ func main() {
 	defer f.Close()
 
 	decoder := yaml.NewDecoder(f)
-	err = decoder.Decode(&config)
+	err = decoder.Decode(&config.Config)
 	if err != nil {
 		panic(err)
 	}
