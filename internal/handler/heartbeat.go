@@ -8,7 +8,7 @@ import (
 
 //Heartbeat only to check the health of the API
 func Heartbeat(w http.ResponseWriter, r *http.Request) {
-	i := r.Context().Value("infos").(*tools.Infos)
+	i := r.Context().Value(tools.ContextKey).(*tools.Infos)
 
 	i.Span = tools.TraceIt(i, spanName)
 	defer i.Span.Finish()

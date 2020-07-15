@@ -56,5 +56,5 @@ func main() {
 
 	s := internal.NewServer()
 	log.Println("waiting routes...")
-	log.Fatal(http.ListenAndServe(config.Server.Port, s.Router))
+	log.Fatal(http.ListenAndServe(config.Config.Server.Port, s.Router))
 }

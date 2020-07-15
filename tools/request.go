@@ -8,6 +8,8 @@ import (
 	"net/http"
 )
 
+const ContextKey = "infos"
+
 type controller func(http.ResponseWriter, *http.Request)
 
 type Infos struct {
@@ -25,7 +27,7 @@ func PreRequest(h controller) http.HandlerFunc {
 		ext.HTTPMethod.Set(span, r.Method)
 		ext.HTTPUrl.Set(span, r.URL.String())
 
-		ctx := context.WithValue(r.Context(), "infos", &Infos{span, tracer})
+		ctx := context.WithValue(r.Context(), ContextKey, &Infos{span, tracer})
 
 		w.Header().Set("Content-Type", "application/json")
 		h(w, r.WithContext(ctx))
