@@ -5,6 +5,6 @@ User CRUD and authentication handler
 - [ ] kong tests
 - [ ] user domain tests
 - [ ] user service tests
-- [ ] user creation route just creating JWT
+- [x] user creation route just creating JWT
 - [ ] create basic database
 - [ ] create user in db
