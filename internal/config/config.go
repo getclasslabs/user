@@ -8,7 +8,11 @@ type Configuration struct {
 		Host string `yaml:"host"`
 		ConsumerRequest string `yaml:"consumer_request"`
 		JwtRequest string `yaml:"jwt_request"`
-	}
+	} `yaml:"kong"`
+	Jaeger struct {
+		Host string `yaml:"host"`
+		Port string `yaml:"port"`
+	} `yaml:"jaeger"`
 }
 
 var Config Configuration

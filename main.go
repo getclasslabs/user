@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/getclasslabs/user/internal"
 	"github.com/getclasslabs/user/internal/config"
 	"github.com/opentracing/opentracing-go"
@@ -19,6 +18,18 @@ const name = "user"
 
 func main() {
 
+	f, err := os.Open("config.yaml")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+
+	decoder := yaml.NewDecoder(f)
+	err = decoder.Decode(&config.Config)
+	if err != nil {
+		panic(err)
+	}
+
 	cfg := jaegerConf.Configuration{
 		ServiceName: name,
 		Sampler: &jaegerConf.SamplerConfig{
@@ -27,11 +38,9 @@ func main() {
 		},
 		Reporter: &jaegerConf.ReporterConfig{
 			LogSpans: false,
-			LocalAgentHostPort: "jaeger:6831",
+			LocalAgentHostPort: config.Config.Jaeger.Host + ":" + config.Config.Jaeger.Port,
 		},
 	}
-
-	fmt.Println("hitting on jaeger:6831")
 
 	jLogger := jaegerLog.StdLogger
 	jMetricsFactory := metrics.NullFactory
@@ -48,17 +57,6 @@ func main() {
 	defer closer.Close()
 
 
-	f, err := os.Open("config.yaml")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close()
-
-	decoder := yaml.NewDecoder(f)
-	err = decoder.Decode(&config.Config)
-	if err != nil {
-		panic(err)
-	}
 
 	s := internal.NewServer()
 	log.Println("waiting routes...")

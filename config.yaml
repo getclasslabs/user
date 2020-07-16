@@ -7,3 +7,8 @@ kong:
   host: "http://getclass_kong:8001"
   consumer_request: "/consumers/"
   jwt_request: "/consumers/%s/jwt"
+
+# Jaeger
+jaeger:
+  host: "localhost"
+  port: "6831"
