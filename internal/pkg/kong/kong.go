@@ -21,10 +21,9 @@ const (
 	ErrorDecodingResponse = "request credentials couldnt decode response"
 	ErrorCreatingJwt = "creating jwt"
 )
-
+const contentType = "application/x-www-form-urlencoded"
 type Kong struct {
 	httpClient pkg.HttpClientInterface
-	cType string
 }
 
 type Claims struct {
@@ -41,11 +40,11 @@ type jwtResponse struct {
 func NewKong() *Kong {
 	k := &Kong{
 		&http.Client{},
-		"application/x-www-form-urlencoded",
 	}
 	return k
 }
 
+//CreateCustomer Creates a customer on kong POST to `http://konghost:8001/consumer`
 func (k *Kong) CreateCustomer(email string) error {
 	cfg := config.Config.Kong
 	urlRequest := cfg.Host + cfg.ConsumerRequest
@@ -58,7 +57,7 @@ func (k *Kong) CreateCustomer(email string) error {
 		return customerror.NewError(k, ErrorCreatingRequestConsumer, err)
 	}
 
-	r.Header.Set("Content-Type", k.cType)
+	r.Header.Set("Content-Type", contentType)
 	resp, err := k.httpClient.Do(r)
 	if err != nil{
 		return customerror.NewError(k, ErrorDoingRequestConsumer, err)
@@ -71,7 +70,7 @@ func (k *Kong) CreateCustomer(email string) error {
 	return nil
 }
 
-
+//CreateCredentials Creates a JWT keys to a user POST to `http://konghost:8001/consumers/%s/jwt`
 func (k *Kong) CreateCredentials(email string) (string, error) {
 	cfg := config.Config.Kong
 	urlReq := cfg.Host + fmt.Sprintf(cfg.JwtRequest, email)
@@ -81,7 +80,7 @@ func (k *Kong) CreateCredentials(email string) (string, error) {
 		return "", customerror.NewError(k, ErrorCreatingRequestCredentials, err)
 	}
 
-	r.Header.Set("Content-Type", k.cType)
+	r.Header.Set("Content-Type", contentType)
 	resp, err := k.httpClient.Do(r)
 	if err != nil {
 		return "", customerror.NewError(k, ErrorDoingRequestCredentials, err)
@@ -100,7 +99,6 @@ func (k *Kong) CreateCredentials(email string) (string, error) {
 	}
 
 	jwtCode, err := k.createJWT(&jwtR)
-
 
 	return jwtCode, nil
 }

@@ -20,7 +20,7 @@ func CreateUser(i *tools.Infos, userReq *Request) (string, error) {
 
 	user, err := domain.NewUser(userReq.Email, userReq.Name, userReq.Password)
 	if err != nil{
-		i.Span.SetTag("error", err.Error())
+		i.LogError(err)
 		return "", err
 	}
 
@@ -28,13 +28,13 @@ func CreateUser(i *tools.Infos, userReq *Request) (string, error) {
 
 	err = k.CreateCustomer(user.Email)
 	if err != nil{
-		i.Span.SetTag("error", err.Error())
+		i.LogError(err)
 		return "", err
 	}
 
 	jwt, err := k.CreateCredentials(user.Email)
 	if err != nil{
-		i.Span.SetTag("error", err.Error())
+		i.LogError(err)
 		return "", err
 	}
 

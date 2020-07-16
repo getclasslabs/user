@@ -17,6 +17,11 @@ type Infos struct {
 	Tracer opentracing.Tracer
 }
 
+func (i *Infos) LogError(err error){
+	i.Span.SetTag("error", true)
+	i.Span.SetTag("errorMsg", err.Error())
+}
+
 func PreRequest(h controller) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		tracer := opentracing.GlobalTracer()

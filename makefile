@@ -1,2 +1,2 @@
-container:
-	sh scripts/container.sh
+build:
+	bash scripts/build.sh $(tag)

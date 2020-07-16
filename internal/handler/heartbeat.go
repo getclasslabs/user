@@ -14,7 +14,7 @@ func Heartbeat(w http.ResponseWriter, r *http.Request) {
 	defer i.Span.Finish()
 
 	ret, _ := json.Marshal(map[string]string{
-		"msg": "hello",
+		"msg": "hello é o caralho",
 	})
 	_, _ = w.Write(ret)
 

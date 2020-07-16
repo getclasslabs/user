@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/getclasslabs/user/internal"
 	"github.com/getclasslabs/user/internal/config"
 	"github.com/opentracing/opentracing-go"
@@ -14,18 +15,23 @@ import (
 	"os"
 )
 
+const name = "user"
+
 func main() {
 
 	cfg := jaegerConf.Configuration{
-		ServiceName: "go-chat",
+		ServiceName: name,
 		Sampler: &jaegerConf.SamplerConfig{
 			Type:  jaeger.SamplerTypeConst,
 			Param: 1,
 		},
 		Reporter: &jaegerConf.ReporterConfig{
 			LogSpans: false,
+			LocalAgentHostPort: "jaeger:6831",
 		},
 	}
+
+	fmt.Println("hitting on jaeger:6831")
 
 	jLogger := jaegerLog.StdLogger
 	jMetricsFactory := metrics.NullFactory
