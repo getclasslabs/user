@@ -13,7 +13,6 @@ import (
 )
 
 const (
-	ErrorCreatingBodyConsumer = "creating body consumer"
 	ErrorCreatingRequestConsumer = "creating request consumer"
 	ErrorDoingRequestConsumer = "doing request consumer"
 	ErrorCreatingRequestCredentials = "creating request credentials"
@@ -54,17 +53,17 @@ func (k *Kong) CreateCustomer(email string) error {
 	r, err := http.NewRequest(http.MethodPost, urlRequest, strings.NewReader(data.Encode()))
 
 	if err != nil{
-		return customerror.NewError(k, ErrorCreatingRequestConsumer, err)
+		return customerror.NewRequestError(k, err, urlRequest, 0)
 	}
 
 	r.Header.Set("Content-Type", contentType)
 	resp, err := k.httpClient.Do(r)
 	if err != nil{
-		return customerror.NewError(k, ErrorDoingRequestConsumer, err)
+		return customerror.NewRequestError(k, err, urlRequest, resp.StatusCode)
 	}
 
 	if resp.StatusCode != 201 {
-		return customerror.NewRequestError(urlRequest, resp.StatusCode)
+		return customerror.NewRequestError(k, err, urlRequest, resp.StatusCode)
 	}
 
 	return nil
@@ -77,17 +76,17 @@ func (k *Kong) CreateCredentials(email string) (string, error) {
 
 	r, err := http.NewRequest(http.MethodPost, urlReq, nil)
 	if err != nil{
-		return "", customerror.NewError(k, ErrorCreatingRequestCredentials, err)
+		return "", customerror.NewRequestError(k, err, urlReq, 0)
 	}
 
 	r.Header.Set("Content-Type", contentType)
 	resp, err := k.httpClient.Do(r)
 	if err != nil {
-		return "", customerror.NewError(k, ErrorDoingRequestCredentials, err)
+		return "", customerror.NewRequestError(k, err, urlReq, resp.StatusCode)
 	}
 
 	if resp.StatusCode != 201 {
-		return "", customerror.NewRequestError(urlReq, resp.StatusCode)
+		return "", customerror.NewRequestError(k, nil, urlReq, resp.StatusCode)
 	}
 
 	defer resp.Body.Close()
@@ -95,7 +94,7 @@ func (k *Kong) CreateCredentials(email string) (string, error) {
 
 	err = json.NewDecoder(resp.Body).Decode(&jwtR)
 	if err != nil {
-		return "", customerror.NewError(k, ErrorDecodingResponse, err)
+		return "", customerror.NewParsingError(k, err)
 	}
 
 	jwtCode, err := k.createJWT(&jwtR)

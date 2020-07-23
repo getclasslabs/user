@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestCustomError_Error(t *testing.T) {
+func TestError_Error(t *testing.T) {
 	type fields struct {
 		Origin     string
 		Complement string
@@ -24,7 +24,7 @@ func TestCustomError_Error(t *testing.T) {
 				"a random error",
 				"customerror.randomStruct",
 			},
-			"[error] a random error | origin: error for testing | from: customerror.randomStruct",
+			"[error] a random error | origin: error for testing | from: customerror.randomStruct | extra: null",
 		},
 		{
 			"[customerror]:Error error from a specific func",
@@ -33,15 +33,15 @@ func TestCustomError_Error(t *testing.T) {
 				"an error",
 				"func(string)",
 			},
-			"[error] an error | origin: error for testing func | from: func(string)",
+			"[error] an error | origin: error for testing func | from: func(string) | extra: null",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := &CustomError{
-				Origin:     tt.fields.Origin,
-				Complement: tt.fields.Complement,
-				From:       tt.fields.From,
+			c := &Error{
+				origin:     tt.fields.Origin,
+				complement: tt.fields.Complement,
+				from:       tt.fields.From,
 			}
 			if got := c.Error(); got != tt.want {
 				t.Errorf("Error() = %v, want %v", got, tt.want)
@@ -74,7 +74,7 @@ func TestNewError(t *testing.T) {
 				"a random error",
 				errors.New("error for testing"),
 			},
-			errors.New("[error] a random error | origin: error for testing | from: customerror.randomStruct"),
+			errors.New("[error] a random error | origin: error for testing | from: customerror.randomStruct | extra: null"),
 		},
 		{
 			"[customerror]:New from a specific func",
@@ -83,7 +83,7 @@ func TestNewError(t *testing.T) {
 				"a random error",
 				errors.New("error for testing"),
 			},
-			errors.New("[error] a random error | origin: error for testing | from: func(string)"),
+			errors.New("[error] a random error | origin: error for testing | from: func(string) | extra: null"),
 		},
 	}
 	for _, tt := range tests {

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"github.com/getclasslabs/user/internal/customerror"
 	"github.com/getclasslabs/user/internal/service/user"
 	"github.com/getclasslabs/user/tools"
 	"net/http"
@@ -9,6 +10,9 @@ import (
 
 //CreateUser Route for user creation
 func CreateUser(w http.ResponseWriter, r *http.Request) {
+	var retStatus int
+	var retMessage string
+
 	i := r.Context().Value(tools.ContextKey).(*tools.Infos)
 
 	i.Span = tools.TraceIt(i, spanName)
@@ -23,9 +27,17 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	jwt, err := user.CreateUser(i, &ur)
 	if err != nil{
-		//TODO Handle errors to fit REST
+		switch err.(type) {
+		case customerror.CustomError:
+			retStatus = customerror.HandleStatus(err.(customerror.CustomError))
+			retMessage = err.(customerror.CustomError).GetMessage()
+		default:
+			retStatus = http.StatusInternalServerError
+			retMessage = customerror.GenericErrorMessage
+		}
 		i.Span.SetTag("creating", http.StatusInternalServerError)
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(retStatus)
+		_, _ = w.Write([]byte(retMessage))
 		return
 	}
 
