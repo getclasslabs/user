@@ -13,14 +13,15 @@ import (
 )
 
 const (
-	ErrorCreatingRequestConsumer = "creating request consumer"
-	ErrorDoingRequestConsumer = "doing request consumer"
+	ErrorCreatingRequestConsumer    = "creating request consumer"
+	ErrorDoingRequestConsumer       = "doing request consumer"
 	ErrorCreatingRequestCredentials = "creating request credentials"
-	ErrorDoingRequestCredentials = "doing request credentials"
-	ErrorDecodingResponse = "request credentials couldnt decode response"
-	ErrorCreatingJwt = "creating jwt"
+	ErrorDoingRequestCredentials    = "doing request credentials"
+	ErrorDecodingResponse           = "request credentials couldnt decode response"
+	ErrorCreatingJwt                = "creating jwt"
 )
 const contentType = "application/x-www-form-urlencoded"
+
 type Kong struct {
 	httpClient pkg.HttpClientInterface
 }
@@ -32,8 +33,8 @@ type Claims struct {
 
 type jwtResponse struct {
 	ConsumerId string `json:"consumer_id"`
-	Key string `json:"key"`
-	Secret string `json:"key"`
+	Key        string `json:"key"`
+	Secret     string `json:"key"`
 }
 
 func NewKong() *Kong {
@@ -52,13 +53,13 @@ func (k *Kong) CreateCustomer(email string) error {
 
 	r, err := http.NewRequest(http.MethodPost, urlRequest, strings.NewReader(data.Encode()))
 
-	if err != nil{
+	if err != nil {
 		return customerror.NewRequestError(k, err, urlRequest, 0)
 	}
 
 	r.Header.Set("Content-Type", contentType)
 	resp, err := k.httpClient.Do(r)
-	if err != nil{
+	if err != nil {
 		return customerror.NewRequestError(k, err, urlRequest, resp.StatusCode)
 	}
 
@@ -75,7 +76,7 @@ func (k *Kong) CreateCredentials(email string) (string, error) {
 	urlReq := cfg.Host + fmt.Sprintf(cfg.JwtRequest, email)
 
 	r, err := http.NewRequest(http.MethodPost, urlReq, nil)
-	if err != nil{
+	if err != nil {
 		return "", customerror.NewRequestError(k, err, urlReq, 0)
 	}
 
@@ -116,3 +117,5 @@ func (k *Kong) createJWT(response *jwtResponse) (string, error) {
 
 	return tokenString, nil
 }
+
+var Service *Kong = NewKong()

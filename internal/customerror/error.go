@@ -6,10 +6,10 @@ import (
 	"reflect"
 )
 
-type CustomError interface{
+type CustomError interface {
 	Error() string
-	GetErrType()    string
-	GetExtraInfo()  map[string]interface{}
+	GetErrType() string
+	GetExtraInfo() map[string]interface{}
 	GetMessage() string
 }
 
@@ -18,7 +18,7 @@ type Error struct {
 	complement string
 	from       string
 	errType    string
-	message string
+	message    string
 	extraInfo  map[string]interface{}
 }
 
@@ -39,7 +39,6 @@ func (c *Error) GetMessage() string {
 	return c.message
 }
 
-
 func newError(from interface{}, complement string, err error, errType, message string, extra map[string]interface{}) error {
 	var f string
 	f = reflect.TypeOf(from).String()
@@ -47,8 +46,9 @@ func newError(from interface{}, complement string, err error, errType, message s
 		from:       f,
 		complement: complement,
 		origin:     err.Error(),
+		message:    message,
 		errType:    errType,
-		extraInfo: 	extra,
+		extraInfo:  extra,
 	}
 }
 func NewError(from interface{}, complement string, err error) error {
@@ -63,7 +63,7 @@ func NewRequestError(from interface{}, err error, url string, statusCode int) er
 		Request,
 		"An internal request error happened",
 		map[string]interface{}{
-			"url": url,
+			"url":         url,
 			"status_code": statusCode,
 		})
 }

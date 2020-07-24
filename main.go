@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/getclasslabs/user/internal"
 	"github.com/getclasslabs/user/internal/config"
+	"github.com/getclasslabs/user/internal/repository"
 	"github.com/opentracing/opentracing-go"
 	"github.com/uber/jaeger-client-go"
 	jaegerConf "github.com/uber/jaeger-client-go/config"
@@ -30,6 +31,8 @@ func main() {
 		panic(err)
 	}
 
+	repository.Repository.Connect()
+
 	cfg := jaegerConf.Configuration{
 		ServiceName: name,
 		Sampler: &jaegerConf.SamplerConfig{
@@ -37,7 +40,7 @@ func main() {
 			Param: 1,
 		},
 		Reporter: &jaegerConf.ReporterConfig{
-			LogSpans: false,
+			LogSpans:           false,
 			LocalAgentHostPort: config.Config.Jaeger.Host + ":" + config.Config.Jaeger.Port,
 		},
 	}
@@ -55,8 +58,6 @@ func main() {
 	}
 	opentracing.SetGlobalTracer(tracer)
 	defer closer.Close()
-
-
 
 	s := internal.NewServer()
 	log.Println("waiting routes...")

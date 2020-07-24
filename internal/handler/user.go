@@ -17,16 +17,16 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	i.Span = tools.TraceIt(i, spanName)
 	defer i.Span.Finish()
-	ur := user.Request{}
-	err := json.NewDecoder(r.Body).Decode(&ur)
-	if err != nil{
+	createUserService := user.CreateUserService{}
+	err := json.NewDecoder(r.Body).Decode(&createUserService)
+	if err != nil {
 		i.Span.SetTag("read", http.StatusBadRequest)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	jwt, err := user.CreateUser(i, &ur)
-	if err != nil{
+	jwt, err := createUserService.Do(i)
+	if err != nil {
 		switch err.(type) {
 		case customerror.CustomError:
 			retStatus = customerror.HandleStatus(err.(customerror.CustomError))

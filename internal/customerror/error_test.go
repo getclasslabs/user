@@ -50,9 +50,9 @@ func TestError_Error(t *testing.T) {
 	}
 }
 
-
-func testFunc (e string) {
+func testFunc(e string) {
 }
+
 type randomStruct struct{}
 
 func TestNewError(t *testing.T) {
@@ -63,8 +63,8 @@ func TestNewError(t *testing.T) {
 		err        error
 	}
 	tests := []struct {
-		name    string
-		args    args
+		name        string
+		args        args
 		expectedErr error
 	}{
 		{

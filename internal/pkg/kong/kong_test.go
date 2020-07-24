@@ -9,10 +9,10 @@ import (
 	"testing"
 )
 
-type mockedHttp struct{
+type mockedHttp struct {
 	returnCode int
-	err error
-	resp string
+	err        error
+	resp       string
 }
 
 func (m *mockedHttp) Do(_ *http.Request) (*http.Response, error) {
@@ -23,7 +23,6 @@ func (m *mockedHttp) Do(_ *http.Request) (*http.Response, error) {
 	}, m.err
 }
 
-
 func TestKong_CreateCustomer(t *testing.T) {
 	type fields struct {
 		httpClient pkg.HttpClientInterface
@@ -31,7 +30,7 @@ func TestKong_CreateCustomer(t *testing.T) {
 	tests := []struct {
 		name    string
 		fields  fields
-		email    string
+		email   string
 		wantErr bool
 	}{
 		{
@@ -58,7 +57,6 @@ func TestKong_CreateCustomer(t *testing.T) {
 		})
 	}
 }
-
 
 func TestKong_CreateCredentials(t *testing.T) {
 	type fields struct {

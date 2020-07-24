@@ -8,8 +8,8 @@ import (
 
 func TestCrypt(t *testing.T) {
 	tests := []struct {
-		name    string
-		pass    string
+		name string
+		pass string
 	}{
 		{
 			"[Crypt]: Compare 1",
@@ -25,7 +25,7 @@ func TestCrypt(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests{
+	for _, tt := range tests {
 		hashed, err := Crypt(tt.pass)
 		assert.NoError(t, err)
 		err = bcrypt.CompareHashAndPassword([]byte(hashed), []byte(tt.pass))
