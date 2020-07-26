@@ -1,11 +1,11 @@
 #!/bin/bash
 
 echo "Compiling the API"
-docker run -it --rm -v "$(pwd)":/go -e GOPATH= golang:1.14 sh -c "CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -tags netgo -a --installsuffix cgo --ldflags='-s'"
+docker run -it --rm -v "$(pwd)":/go -e GOPATH= golang:1.14 sh -c "CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ./cmd/user/"
 
 rm ./docker/user
 mv ./user ./docker/
-cp ./config.yaml ./docker/
+cp ./docker-config.yaml ./docker/config.yaml
 
 docker build -t getclass/user:$1 docker/
 

@@ -2,9 +2,10 @@ package handler
 
 import (
 	"encoding/json"
+	"github.com/getclasslabs/go-tools/pkg/request"
+	"github.com/getclasslabs/go-tools/pkg/tracer"
 	"github.com/getclasslabs/user/internal/customerror"
 	"github.com/getclasslabs/user/internal/service/user"
-	"github.com/getclasslabs/user/tools"
 	"net/http"
 )
 
@@ -13,9 +14,9 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	var retStatus int
 	var retMessage string
 
-	i := r.Context().Value(tools.ContextKey).(*tools.Infos)
+	i := r.Context().Value(request.ContextKey).(*tracer.Infos)
 
-	i.Span = tools.TraceIt(i, spanName)
+	i.TraceIt(spanName)
 	defer i.Span.Finish()
 	createUserService := user.CreateUserService{}
 	err := json.NewDecoder(r.Body).Decode(&createUserService)

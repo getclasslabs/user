@@ -1,0 +1,10 @@
+CREATE DATABASE IF NOT EXISTS userdb;
+
+USE userdb;
+
+CREATE TABLE users (
+    id INT(6) AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(50) unique,
+    password VARCHAR(200),
+    create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)

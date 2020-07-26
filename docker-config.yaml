@@ -4,18 +4,18 @@ server:
 
 # Kong Reference
 kong:
-  host: "http://127.0.0.1:8001"
+  host: "http://getclass_kong:8001"
   consumer_request: "/consumers/"
   jwt_request: "/consumers/%s/jwt"
 
 # Jaeger
 jaeger:
-  host: "localhost"
+  host: "jaeger"
   port: "6831"
 
 #Mysql
 mysql:
-  host: 127.0.0.1
+  host: mysql
   port: 3306
   user: root
   password:

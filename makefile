@@ -3,3 +3,6 @@ build:
 
 start:
 	docker stack deploy -c docker-compose.yaml gcl
+
+migrate:
+	bash scripts/migrate.sh $(number)

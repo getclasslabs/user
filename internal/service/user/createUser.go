@@ -1,10 +1,11 @@
 package user
 
 import (
+	"github.com/getclasslabs/go-tools/pkg/tracer"
+	"github.com/getclasslabs/user/internal/customerror"
 	"github.com/getclasslabs/user/internal/pkg"
 	"github.com/getclasslabs/user/internal/pkg/kong"
 	"github.com/getclasslabs/user/internal/repository"
-	"github.com/getclasslabs/user/tools"
 )
 
 type CreateUserService struct {
@@ -12,16 +13,28 @@ type CreateUserService struct {
 	Password string `json:"password"`
 }
 
-func (c *CreateUserService) Do(i *tools.Infos) (string, error) {
+func (c *CreateUserService) Do(i *tracer.Infos) (string, error) {
 
-	i.Span = tools.TraceIt(i, "creating user")
+	i.TraceIt("creating user")
 	defer i.Span.Finish()
 
-	pass := c.cryptPassword(c.Password)
+	pass, err := c.cryptPassword(c.Password)
+	if err != nil{
+		i.LogError(err)
+		return "", err
+	}
+
+	uRepo := repository.NewUser()
+
+	err = uRepo.SaveUser(i, c.Email, pass)
+	if err != nil{
+		i.LogError(err)
+		return "", err
+	}
 
 	k := kong.Service
 
-	err := k.CreateCustomer(c.Email)
+	err = k.CreateCustomer(c.Email)
 	if err != nil {
 		i.LogError(err)
 		return "", err
@@ -39,6 +52,7 @@ func (c *CreateUserService) Do(i *tools.Infos) (string, error) {
 func (c *CreateUserService) cryptPassword(plainPassword string) (string, error) {
 	password, err := pkg.Crypt(plainPassword)
 	if err != nil {
+		err = customerror.NewError(c, "crypting password", err)
 		return "", err
 	}
 

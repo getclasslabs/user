@@ -31,7 +31,7 @@ func main() {
 		panic(err)
 	}
 
-	repository.Repository.Connect()
+	repository.Start()
 
 	cfg := jaegerConf.Configuration{
 		ServiceName: name,

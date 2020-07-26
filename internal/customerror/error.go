@@ -71,3 +71,15 @@ func NewRequestError(from interface{}, err error, url string, statusCode int) er
 func NewParsingError(from interface{}, err error) error {
 	return newError(from, "parsing error", err, Parsing, "Some information is wrong", nil)
 }
+
+func NewDbError(from interface{}, query string, err error) error {
+	return newError(
+		from,
+		"performing a query",
+		err,
+		Database,
+		"Some information is wrong",
+		map[string]interface{}{
+		"query":         query,
+	})
+}
