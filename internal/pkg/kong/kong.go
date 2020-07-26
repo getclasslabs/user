@@ -34,7 +34,7 @@ type Claims struct {
 type jwtResponse struct {
 	ConsumerId string `json:"consumer_id"`
 	Key        string `json:"key"`
-	Secret     string `json:"key"`
+	Secret     string `json:"secret"`
 }
 
 func NewKong() *Kong {
@@ -105,11 +105,11 @@ func (k *Kong) CreateCredentials(email string) (string, error) {
 
 func (k *Kong) createJWT(response *jwtResponse) (string, error) {
 	claims := &Claims{
-		Iss: response.Secret,
+		Iss: response.Key,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString([]byte(response.Key))
+	tokenString, err := token.SignedString([]byte(response.Secret))
 
 	if err != nil {
 		return "", customerror.NewError(k, ErrorCreatingJwt, err)
@@ -118,4 +118,4 @@ func (k *Kong) createJWT(response *jwtResponse) (string, error) {
 	return tokenString, nil
 }
 
-var Service *Kong = NewKong()
+var Service = NewKong()

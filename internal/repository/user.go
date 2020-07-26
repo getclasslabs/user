@@ -27,7 +27,7 @@ func newMockedUser() *User {
 func (u *User) SaveUser(i *tracer.Infos, email, password string) error {
 	i.TraceIt(traceName)
 	q := "INSERT INTO users(email,password) VALUES(?, ?) "
-	_, err := u.db.Insert(u.i, q, email, password)
+	_, err := u.db.Insert(i, q, email, password)
 
 	if err != nil {
 		err := customerror.NewDbError(u, q, err)
