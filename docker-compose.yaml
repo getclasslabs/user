@@ -8,9 +8,6 @@ services:
       update_config:
         parallelism: 1
         order: start-first
-    command: bash -c "
-      ssh root
-      "
     networks:
       main:
         aliases:
