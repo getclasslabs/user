@@ -13,11 +13,6 @@ import (
 )
 
 const (
-	ErrorCreatingRequestConsumer    = "creating request consumer"
-	ErrorDoingRequestConsumer       = "doing request consumer"
-	ErrorCreatingRequestCredentials = "creating request credentials"
-	ErrorDoingRequestCredentials    = "doing request credentials"
-	ErrorDecodingResponse           = "request credentials couldnt decode response"
 	ErrorCreatingJwt                = "creating jwt"
 )
 const contentType = "application/x-www-form-urlencoded"
