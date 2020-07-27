@@ -36,3 +36,25 @@ func (u *User) SaveUser(i *tracer.Infos, email, password string) error {
 	}
 	return nil
 }
+
+func (u *User) SaveProfile(i *tracer.Infos, email string, register, gender int, firstName, lastName, birthDate, nickname string) error {
+	i.TraceIt(traceName)
+	q := "UPDATE users SET " +
+		"register=?, " +
+		"gender=?, " +
+		"first_name=?, " +
+		"last_name=?, " +
+		"birthDate=FROM_UNIXTIME(?), " +
+		"nickname=? " +
+		"WHERE " +
+		"email = ?"
+	_, err := u.db.Insert(i, q, register, gender, firstName, lastName, birthDate, nickname, email)
+
+	if err != nil {
+		err := customerror.NewDbError(u, q, err)
+		i.LogError(err)
+		return err
+	}
+	return nil
+}
+
