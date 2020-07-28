@@ -13,3 +13,4 @@ func Crypt(text string) (string, error) {
 
 	return string(hash), nil
 }
+

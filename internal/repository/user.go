@@ -26,6 +26,8 @@ func newMockedUser() *User {
 
 func (u *User) SaveUser(i *tracer.Infos, email, password string) error {
 	i.TraceIt(traceName)
+	defer i.Span.Finish()
+
 	q := "INSERT INTO users(email,password) VALUES(?, ?) "
 	_, err := u.db.Insert(i, q, email, password)
 
@@ -39,6 +41,8 @@ func (u *User) SaveUser(i *tracer.Infos, email, password string) error {
 
 func (u *User) SaveProfile(i *tracer.Infos, email string, register, gender int, firstName, lastName, birthDate, nickname string) error {
 	i.TraceIt(traceName)
+	defer i.Span.Finish()
+
 	q := "UPDATE users SET " +
 		"register=?, " +
 		"gender=?, " +
@@ -56,5 +60,32 @@ func (u *User) SaveProfile(i *tracer.Infos, email string, register, gender int, 
 		return err
 	}
 	return nil
+}
+
+func (u *User) GetUserByEmail(i *tracer.Infos, email string) (map[string]interface{}, error) {
+	i.TraceIt(traceName)
+	defer i.Span.Finish()
+
+	q := "SELECT " +
+		"password, " +
+		"nickname, " +
+		"first_name, " +
+		"last_name, " +
+		"register, " +
+		"gender " +
+		"FROM users " +
+		"WHERE " +
+		"email = ?"
+
+	result, err := u.db.Get(i, q, email)
+
+	if err != nil {
+		err := customerror.NewDbError(u, q, err)
+		i.LogError(err)
+		return nil, err
+	}
+	return result, nil
+
+
 }
 

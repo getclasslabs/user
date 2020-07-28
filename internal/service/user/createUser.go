@@ -18,9 +18,9 @@ func (c *CreateUserService) Do(i *tracer.Infos) (string, error) {
 	i.TraceIt("creating user")
 	defer i.Span.Finish()
 
-	pass, err := c.cryptPassword(c.Password)
-	if err != nil{
-		i.LogError(err)
+	pass, err := pkg.Crypt(c.Password)
+	if err != nil {
+		err = customerror.NewError(c, "crypting password", err)
 		return "", err
 	}
 
@@ -47,14 +47,4 @@ func (c *CreateUserService) Do(i *tracer.Infos) (string, error) {
 	}
 
 	return jwt, nil
-}
-
-func (c *CreateUserService) cryptPassword(plainPassword string) (string, error) {
-	password, err := pkg.Crypt(plainPassword)
-	if err != nil {
-		err = customerror.NewError(c, "crypting password", err)
-		return "", err
-	}
-
-	return password, nil
 }
