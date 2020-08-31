@@ -10,11 +10,13 @@ const traceName = "user repository"
 
 type User struct {
 	db db.Database
+	traceName string
 }
 
 func NewUser() *User {
 	return &User{
 		db: Db,
+		traceName: "user repository",
 	}
 }
 
@@ -25,7 +27,7 @@ func newMockedUser() *User {
 }
 
 func (u *User) SaveUser(i *tracer.Infos, email, password string) error {
-	i.TraceIt(traceName)
+	i.TraceIt(u.traceName)
 	defer i.Span.Finish()
 
 	q := "INSERT INTO users(email,password) VALUES(?, ?) "

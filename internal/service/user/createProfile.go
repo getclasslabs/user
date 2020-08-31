@@ -13,12 +13,18 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
+
+const (
+	student = 0
+	teacher = 1
+)
+
 type Profile struct {
 	FirstName string `json:"firstName"`
 	LastName string `json:"lastName"`
 	BirthDate string `json:"birthDate"`
 	Gender int `json:"gender"`
-	Register int `json:"register"`
+	Register int `json:"register"` //0 to student an 1 to teacher
 	Nickname string
 }
 
@@ -31,6 +37,23 @@ func (p *Profile) Do(i *tracer.Infos, email string) error {
 	uRepo := repository.NewUser()
 
 	err := uRepo.SaveProfile(i, email, p.Register, p.Gender, p.FirstName, p.LastName, p.BirthDate, p.Nickname)
+	if err != nil{
+		i.LogError(err)
+		return err
+	}
+
+	if p.Register == student {
+		s := repository.NewStudent()
+		err = s.Create(i, email)
+		if err != nil{
+			i.LogError(err)
+			return err
+		}
+		return nil
+	}
+
+	t := repository.NewTeacher()
+	err = t.Create(i, email)
 	if err != nil{
 		i.LogError(err)
 		return err
