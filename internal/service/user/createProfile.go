@@ -20,12 +20,12 @@ const (
 )
 
 type Profile struct {
-	FirstName string `json:"firstName"`
-	LastName string `json:"lastName"`
-	BirthDate string `json:"birthDate"`
-	Gender int `json:"gender"`
-	Register int `json:"register"` //0 to student an 1 to teacher
-	Nickname string
+	FirstName string `json:"firstName,omitempty"`
+	LastName string `json:"lastName,omitempty"`
+	BirthDate string `json:"birthDate,omitempty"`
+	Gender int `json:"gender,omitempty"`
+	Register int `json:"register,omitempty"` //0 to student an 1 to teacher
+	Nickname string `json:"nickname,omitempty"`
 }
 
 func (p *Profile) Do(i *tracer.Infos, email string) error {

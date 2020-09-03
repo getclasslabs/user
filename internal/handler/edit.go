@@ -30,5 +30,6 @@ func EditProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
+	ret, _ := json.Marshal(e)
+	_, _ = w.Write(ret)
 }

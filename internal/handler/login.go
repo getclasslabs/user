@@ -9,8 +9,6 @@ import (
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {
-	//var retStatus int
-
 	i := r.Context().Value(request.ContextKey).(*tracer.Infos)
 	i.TraceIt(spanName)
 	defer i.Span.Finish()
