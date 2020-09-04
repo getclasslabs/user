@@ -89,6 +89,32 @@ func (u *User) GetUserByEmail(i *tracer.Infos, email string) (map[string]interfa
 	return result, nil
 }
 
+func (u *User) GetUserByNick(i *tracer.Infos, nickname string) (map[string]interface{}, error) {
+	i.TraceIt(traceName)
+	defer i.Span.Finish()
+
+	q := "SELECT " +
+		"	password, " +
+		"	nickname, " +
+		"	first_name, " +
+		"	last_name, " +
+		"	register, " +
+		"	gender " +
+		"FROM users " +
+		"WHERE " +
+		"	nickname = ?"
+
+	result, err := u.db.Get(i, q, nickname)
+
+	if err != nil {
+		err := customerror.NewDbError(u, q, err)
+		i.LogError(err)
+		return nil, err
+	}
+	return result, nil
+}
+
+
 func (u *User) Edit(i *tracer.Infos, email, nickname, gender, firstName, lastName, birthDate, twitter, facebook, instagram, description, telephone, address string) error {
 	i.TraceIt(traceName)
 	defer i.Span.Finish()
@@ -119,7 +145,8 @@ func (u *User) Edit(i *tracer.Infos, email, nickname, gender, firstName, lastNam
 		instagram,
 		description,
 		telephone,
-		address)
+		address,
+		email)
 
 	if err != nil {
 		err := customerror.NewDbError(u, q, err)
