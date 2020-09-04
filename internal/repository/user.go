@@ -119,7 +119,8 @@ func (u *User) Edit(i *tracer.Infos, email, nickname, gender, firstName, lastNam
 		instagram,
 		description,
 		telephone,
-		address)
+		address,
+		email)
 
 	if err != nil {
 		err := customerror.NewDbError(u, q, err)
