@@ -1,4 +1,4 @@
-package user
+package userService
 
 import (
 	"github.com/getclasslabs/go-tools/pkg/tracer"

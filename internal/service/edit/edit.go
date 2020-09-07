@@ -3,11 +3,11 @@ package edit
 import (
 	"github.com/getclasslabs/go-tools/pkg/tracer"
 	"github.com/getclasslabs/user/internal/domains"
-	"github.com/getclasslabs/user/internal/service/user"
+	"github.com/getclasslabs/user/internal/service/userService"
 )
 
 type Edit struct {
-	user.Profile
+	userService.Profile
 	Twitter string `json:"twitter,omitempty"`
 	Facebook string `json:"facebook,omitempty"`
 	Instagram string `json:"instagram,omitempty"`
