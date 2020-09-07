@@ -6,6 +6,7 @@ import (
 	"github.com/getclasslabs/go-tools/pkg/tracer"
 	"github.com/getclasslabs/user/internal/customerror"
 	"github.com/getclasslabs/user/internal/service/user"
+	"github.com/gorilla/mux"
 	"net/http"
 )
 
@@ -85,4 +86,41 @@ func CreateProfile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
+}
+
+func GetUser(w http.ResponseWriter, r *http.Request) {
+	var retStatus int
+	var retMessage string
+
+	i := r.Context().Value(request.ContextKey).(*tracer.Infos)
+	i.TraceIt(spanName)
+	defer i.Span.Finish()
+
+	nickname := mux.Vars(r)["nickname"]
+
+	if len(nickname) == 0 {
+		msg, _ := json.Marshal(map[string]string{"msg": "No nickname provided"})
+		_, _ = w.Write(msg)
+		w.WriteHeader(http.StatusBadRequest)
+	}
+
+	u, err := user.Get(i, nickname)
+	if err != nil {
+		switch err.(type) {
+		case customerror.CustomError:
+			retStatus = customerror.HandleStatus(err.(customerror.CustomError))
+			retMessage = err.(customerror.CustomError).GetMessage()
+		default:
+			retStatus = http.StatusInternalServerError
+			retMessage = customerror.GenericErrorMessage
+		}
+		i.Span.SetTag("creating", http.StatusInternalServerError)
+		w.WriteHeader(retStatus)
+		_, _ = w.Write([]byte(retMessage))
+		return
+	}
+
+	ret, _ := json.Marshal(u)
+	_, _ = w.Write(ret)
+
 }
