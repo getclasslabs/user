@@ -7,7 +7,7 @@ import (
 )
 
 type Edit struct {
-	user.Profile
+	userService.Profile
 	Twitter string `json:"twitter,omitempty"`
 	Facebook string `json:"facebook,omitempty"`
 	Instagram string `json:"instagram,omitempty"`

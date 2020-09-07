@@ -19,7 +19,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	i.TraceIt(spanName)
 	defer i.Span.Finish()
 
-	createUserService := user.CreateUserService{}
+	createUserService := userService.CreateUserService{}
 	err := json.NewDecoder(r.Body).Decode(&createUserService)
 	if err != nil {
 		i.Span.SetTag("read", http.StatusBadRequest)
@@ -61,7 +61,7 @@ func CreateProfile(w http.ResponseWriter, r *http.Request) {
 	i.TraceIt(spanName)
 	defer i.Span.Finish()
 
-	profileService := user.Profile{}
+	profileService := userService.Profile{}
 	err := json.NewDecoder(r.Body).Decode(&profileService)
 	if err != nil {
 		i.Span.SetTag("read", http.StatusBadRequest)
@@ -104,7 +104,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 	}
 
-	u, err := user.Get(i, nickname)
+	u, err := userService.Get(i, nickname)
 	if err != nil {
 		switch err.(type) {
 		case customerror.CustomError:
