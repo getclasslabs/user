@@ -5,7 +5,7 @@ import (
 	"github.com/getclasslabs/go-tools/pkg/request"
 	"github.com/getclasslabs/go-tools/pkg/tracer"
 	"github.com/getclasslabs/user/internal/customerror"
-	"github.com/getclasslabs/user/internal/service/user"
+	"github.com/getclasslabs/user/internal/service/userService"
 	"github.com/gorilla/mux"
 	"net/http"
 )

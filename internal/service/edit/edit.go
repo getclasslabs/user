@@ -3,7 +3,7 @@ package edit
 import (
 	"github.com/getclasslabs/go-tools/pkg/tracer"
 	"github.com/getclasslabs/user/internal/domains"
-	"github.com/getclasslabs/user/internal/service/user"
+	"github.com/getclasslabs/user/internal/service/userService"
 )
 
 type Edit struct {
