@@ -4,6 +4,7 @@ import (
 	"github.com/getclasslabs/go-tools/pkg/db"
 	"github.com/getclasslabs/go-tools/pkg/tracer"
 	"github.com/getclasslabs/user/internal/customerror"
+	"github.com/getclasslabs/user/internal/domains"
 )
 
 const traceName = "user repository"
@@ -115,7 +116,7 @@ func (u *User) GetUserByNick(i *tracer.Infos, nickname string) (map[string]inter
 }
 
 
-func (u *User) Edit(i *tracer.Infos, email, nickname, gender, firstName, lastName, birthDate, twitter, facebook, instagram, description, telephone, address string) error {
+func (u *User) Edit(i *tracer.Infos, user domains.User) error {
 	i.TraceIt(traceName)
 	defer i.Span.Finish()
 
@@ -135,18 +136,18 @@ func (u *User) Edit(i *tracer.Infos, email, nickname, gender, firstName, lastNam
 		"email = ? "
 
 	_, err := u.db.Update(i, q,
-		nickname,
-		gender,
-		firstName,
-		lastName,
-		birthDate,
-		twitter,
-		facebook,
-		instagram,
-		description,
-		telephone,
-		address,
-		email)
+		user.Nickname,
+		user.Gender,
+		user.FirstName,
+		user.LastName,
+		user.BirthDate,
+		user.Twitter,
+		user.Facebook,
+		user.Instagram,
+		user.Description,
+		user.Telephone,
+		user.Address,
+		user.Email)
 
 	if err != nil {
 		err := customerror.NewDbError(u, q, err)

@@ -2,7 +2,7 @@ package edit
 
 import (
 	"github.com/getclasslabs/go-tools/pkg/tracer"
-	"github.com/getclasslabs/user/internal/repository"
+	"github.com/getclasslabs/user/internal/domains"
 	"github.com/getclasslabs/user/internal/service/user"
 )
 
@@ -26,55 +26,56 @@ func (e *Edit) Do(i *tracer.Infos, email string) error {
 	defer i.Span.Finish()
 
 	if err := e.editCommonInfo(i, email); err != nil {
-		i.LogError(err)
 		return err
 	}
 
 	if err := e.editTeacherInfo(i, email); err != nil {
-		i.LogError(err)
 		return err
 	}
 
 	return nil
 }
 
-
 func (e *Edit) editCommonInfo(i *tracer.Infos, email string) error {
-	uRepo := repository.NewUser()
-
-	err := uRepo.Edit(i,
-		email,
-		e.Nickname,
-		string(e.Gender),
-		e.FirstName,
-		e.LastName,
-		e.BirthDate,
-		e.Twitter,
-		e.Facebook,
-		e.Instagram,
-		e.Description,
-		e.Telephone,
-		e.Address)
-	if err != nil {
-		i.LogError(err)
-		return err
+	u := domains.User{
+		Domain : domains.Domain{
+			Tracer: i,
+			Email:  email,
+		},
+		FirstName:   e.FirstName,
+		LastName:    e.LastName,
+		BirthDate:   e.BirthDate,
+		Gender:      e.Gender,
+		Nickname:    e.Nickname,
+		Twitter:     e.Twitter,
+		Facebook:    e.Facebook,
+		Instagram:   e.Instagram,
+		Description: e.Description,
+		Telephone:   e.Telephone,
+		Address:     e.Address,
 	}
 
+	err := u.Edit()
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 
 func (e *Edit) editTeacherInfo(i *tracer.Infos, email string) error {
-	tRepo := repository.NewTeacher()
+	t := domains.Teacher{
+		Domain: domains.Domain{
+			Tracer: i,
+			Email:  email,
+		},
+		Formation: e.Formation,
+		Specialization: e.Specialization,
+		WorkingTime: e.WorkingTime,
+	}
 
-	err := tRepo.Edit(i,
-		email,
-		e.Formation,
-		e.Specialization,
-		e.WorkingTime)
-
+	err := t.Edit()
 	if err != nil {
-		i.LogError(err)
 		return err
 	}
 
