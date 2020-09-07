@@ -25,7 +25,8 @@ func (s *Server) serve() {
 	s.Router.Path("/heartbeat").HandlerFunc(request.PreRequest(handler.Heartbeat)).Methods(http.MethodGet)
 	s.Router.Path("/create").HandlerFunc(request.PreRequest(handler.CreateUser)).Methods(http.MethodPost)
 	s.Router.Path("/profile").HandlerFunc(request.PreRequest(handler.CreateProfile)).Methods(http.MethodPut)
+
+	s.Router.Path("/edit").HandlerFunc(request.PreRequest(handler.EditProfile)).Methods(http.MethodPut)
+
 	s.Router.Path("/login").HandlerFunc(request.PreRequest(handler.Login)).Methods(http.MethodPost)
-
-
 }

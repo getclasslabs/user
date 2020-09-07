@@ -15,8 +15,6 @@ type Login struct {
 func (l *Login) Do(i *tracer.Infos) (map[string]interface{}, error) {
 	i.TraceIt("login")
 
-
-
 	uRepo := repository.NewUser()
 	result, err := uRepo.GetUserByEmail(i, l.Email)
 	if err != nil{

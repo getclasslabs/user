@@ -10,11 +10,13 @@ const traceName = "user repository"
 
 type User struct {
 	db db.Database
+	traceName string
 }
 
 func NewUser() *User {
 	return &User{
 		db: Db,
+		traceName: "user repository",
 	}
 }
 
@@ -25,7 +27,7 @@ func newMockedUser() *User {
 }
 
 func (u *User) SaveUser(i *tracer.Infos, email, password string) error {
-	i.TraceIt(traceName)
+	i.TraceIt(u.traceName)
 	defer i.Span.Finish()
 
 	q := "INSERT INTO users(email,password) VALUES(?, ?) "
@@ -85,7 +87,47 @@ func (u *User) GetUserByEmail(i *tracer.Infos, email string) (map[string]interfa
 		return nil, err
 	}
 	return result, nil
-
-
 }
+
+func (u *User) Edit(i *tracer.Infos, email, nickname, gender, firstName, lastName, birthDate, twitter, facebook, instagram, description, telephone, address string) error {
+	i.TraceIt(traceName)
+	defer i.Span.Finish()
+
+	q := "UPDATE users SET " +
+		"nickname = ?, " +
+		"gender = ?, " +
+		"firstName = ?, " +
+		"lastName = ?, " +
+		"birthDate = ?, " +
+		"twitter = ?, " +
+		"facebook = ?, " +
+		"instagram = ?, " +
+		"description = ?, " +
+		"telephone = ?, " +
+		"address = ? " +
+	"WHERE " +
+		"email = ? "
+
+	_, err := u.db.Update(i, q,
+		nickname,
+		gender,
+		firstName,
+		lastName,
+		birthDate,
+		twitter,
+		facebook,
+		instagram,
+		description,
+		telephone,
+		address,
+		email)
+
+	if err != nil {
+		err := customerror.NewDbError(u, q, err)
+		i.LogError(err)
+		return err
+	}
+	return nil
+}
+
 

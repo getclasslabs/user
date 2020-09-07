@@ -4,27 +4,32 @@ import (
 	"encoding/json"
 	"github.com/getclasslabs/go-tools/pkg/request"
 	"github.com/getclasslabs/go-tools/pkg/tracer"
-	"github.com/getclasslabs/user/internal/service/login"
+	"github.com/getclasslabs/user/internal/service/edit"
 	"net/http"
 )
 
-func Login(w http.ResponseWriter, r *http.Request) {
+func EditProfile(w http.ResponseWriter, r *http.Request) {
 	i := r.Context().Value(request.ContextKey).(*tracer.Infos)
 	i.TraceIt(spanName)
 	defer i.Span.Finish()
 
-	loginService := login.Login{}
-	err := json.NewDecoder(r.Body).Decode(&loginService)
+	email := r.Header.Get("X-Consumer-Username")
+
+	e := edit.Edit{}
+	err := json.NewDecoder(r.Body).Decode(&e)
 	if err != nil {
 		i.Span.SetTag("read", http.StatusBadRequest)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	result, err := loginService.Do(i)
+	err = e.Do(i, email)
+	if err != nil {
+		i.Span.SetTag("read", http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
-
-	ret, _ := json.Marshal(result)
+	ret, _ := json.Marshal(e)
 	_, _ = w.Write(ret)
-
 }
