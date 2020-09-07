@@ -21,7 +21,10 @@ jobs:
 
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
-    
+
+    - name: Setting up go mod
+      run: go mod vendor
+
     - name: Test
       run: go test -v ./...
   
