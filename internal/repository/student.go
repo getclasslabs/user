@@ -7,13 +7,13 @@ import (
 )
 
 type Student struct {
-	db db.Database
+	db        db.Database
 	traceName string
 }
 
 func NewStudent() *Student {
 	return &Student{
-		db: Db,
+		db:        Db,
 		traceName: "student repository",
 	}
 }

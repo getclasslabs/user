@@ -9,13 +9,13 @@ import (
 const traceNameTeacher = "teacher repository"
 
 type Teacher struct {
-	db db.Database
+	db        db.Database
 	traceName string
 }
 
 func NewTeacher() *Teacher {
 	return &Teacher{
-		db: Db,
+		db:        Db,
 		traceName: "teacher repository",
 	}
 }
@@ -57,4 +57,29 @@ func (t *Teacher) Edit(i *tracer.Infos, email string, formation string, speciali
 		return err
 	}
 	return nil
+}
+
+func (t *Teacher) GetTeacherByPhoneticName(i *tracer.Infos, name string) (map[string]interface{}, error) {
+	i.TraceIt(t.traceName)
+	defer i.Span.Finish()
+
+	q := "SELECT " +
+		"       u.first_name, " +
+		"       u.last_name, " +
+		"       u.nickname, " +
+		"       t.formation " +
+		"FROM users u " +
+		"INNER JOIN teacher t on u.id = t.user_id  " +
+		"WHERE " +
+		"      u.register = 0 AND " +
+		"      (soundex(u.first_name) = soundex(?) OR " +
+		"       soundex(u.last_name) = soundex(?))"
+	result, err := t.db.Get(i, q, name, name)
+
+	if err != nil {
+		err := customerror.NewDbError(t, q, err)
+		i.LogError(err)
+		return nil, err
+	}
+	return result, nil
 }

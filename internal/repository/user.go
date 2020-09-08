@@ -9,13 +9,13 @@ import (
 const traceName = "user repository"
 
 type User struct {
-	db db.Database
+	db        db.Database
 	traceName string
 }
 
 func NewUser() *User {
 	return &User{
-		db: Db,
+		db:        Db,
 		traceName: "user repository",
 	}
 }
@@ -114,7 +114,6 @@ func (u *User) GetUserByNick(i *tracer.Infos, nickname string) (map[string]inter
 	return result, nil
 }
 
-
 func (u *User) Edit(i *tracer.Infos, email, nickname, firstName, lastName, birthDate, twitter, facebook,
 	instagram, description, telephone, address string, gender int) error {
 	i.TraceIt(traceName)
@@ -132,7 +131,7 @@ func (u *User) Edit(i *tracer.Infos, email, nickname, firstName, lastName, birth
 		"description = ?, " +
 		"telephone = ?, " +
 		"address = ? " +
-	"WHERE " +
+		"WHERE " +
 		"email = ? "
 
 	_, err := u.db.Update(i, q,
@@ -156,5 +155,3 @@ func (u *User) Edit(i *tracer.Infos, email, nickname, firstName, lastName, birth
 	}
 	return nil
 }
-
-

@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	ErrorCreatingJwt                = "creating jwt"
+	ErrorCreatingJwt = "creating jwt"
 )
 const contentType = "application/x-www-form-urlencoded"
 

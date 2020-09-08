@@ -6,8 +6,7 @@ import (
 	"github.com/getclasslabs/go-tools/pkg/tracer"
 )
 
-type Mock struct{
-	
+type Mock struct {
 }
 
 func (m Mock) Connect(config db.Config) {
@@ -29,4 +28,3 @@ func (m Mock) Get(infos *tracer.Infos, s string, i ...interface{}) (map[string]i
 func (m Mock) Fetch(infos *tracer.Infos, s string, i ...interface{}) ([]map[string]interface{}, error) {
 	panic("implement me")
 }
-

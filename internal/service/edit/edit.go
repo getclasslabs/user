@@ -8,17 +8,17 @@ import (
 
 type Edit struct {
 	userService.Profile
-	Twitter string `json:"twitter,omitempty"`
-	Facebook string `json:"facebook,omitempty"`
-	Instagram string `json:"instagram,omitempty"`
+	Twitter     string `json:"twitter,omitempty"`
+	Facebook    string `json:"facebook,omitempty"`
+	Instagram   string `json:"instagram,omitempty"`
 	Description string `json:"description,omitempty"`
-	Telephone string `json:"telephone,omitempty"`
-	Address string `json:"address,omitempty"`
+	Telephone   string `json:"telephone,omitempty"`
+	Address     string `json:"address,omitempty"`
 
 	//teacher
-	Formation string `json:"formation,omitempty"`
+	Formation      string `json:"formation,omitempty"`
 	Specialization string `json:"specialization,omitempty"`
-	WorkingTime int `json:"workingTime,omitempty"`
+	WorkingTime    int    `json:"workingTime,omitempty"`
 }
 
 func (e *Edit) Do(i *tracer.Infos, email string) error {
@@ -38,7 +38,7 @@ func (e *Edit) Do(i *tracer.Infos, email string) error {
 
 func (e *Edit) editCommonInfo(i *tracer.Infos, email string) error {
 	u := domains.User{
-		Domain : domains.Domain{
+		Domain: domains.Domain{
 			Tracer: i,
 			Email:  email,
 		},
@@ -62,16 +62,15 @@ func (e *Edit) editCommonInfo(i *tracer.Infos, email string) error {
 	return nil
 }
 
-
 func (e *Edit) editTeacherInfo(i *tracer.Infos, email string) error {
 	t := domains.Teacher{
 		Domain: domains.Domain{
 			Tracer: i,
 			Email:  email,
 		},
-		Formation: e.Formation,
+		Formation:      e.Formation,
 		Specialization: e.Specialization,
-		WorkingTime: e.WorkingTime,
+		WorkingTime:    e.WorkingTime,
 	}
 
 	err := t.Edit()
