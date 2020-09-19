@@ -74,7 +74,8 @@ func (u *User) GetUserByEmail(i *tracer.Infos, email string) (map[string]interfa
 		"first_name, " +
 		"last_name, " +
 		"register, " +
-		"gender " +
+		"gender, " +
+		"photo_path " +
 		"FROM users " +
 		"WHERE " +
 		"email = ?"
@@ -156,5 +157,24 @@ func (u *User) Edit(i *tracer.Infos, email, nickname, firstName, lastName, birth
 	}
 	return nil
 }
+
+func (u *User) UpdatePhoto(i *tracer.Infos, email, path string) error {
+	i.TraceIt(traceName)
+	defer i.Span.Finish()
+
+	q := "UPDATE users SET " +
+		"	photo_path = ? " +
+		"WHERE " +
+		"	email = ?"
+
+	_, err := u.db.Update(i, q, path, email)
+	if err != nil {
+		err := customerror.NewDbError(u, q, err)
+		i.LogError(err)
+		return err
+	}
+	return nil
+}
+
 
 

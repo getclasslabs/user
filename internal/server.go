@@ -31,4 +31,8 @@ func (s *Server) serve() {
 	s.Router.Path("/login").HandlerFunc(request.PreRequest(handler.Login)).Methods(http.MethodPost)
 
 	s.Router.Path("user/{nickname}").HandlerFunc(request.PreRequest(handler.GetUser)).Methods(http.MethodPost)
+
+	s.Router.Path("/photo").HandlerFunc(request.PreRequest(handler.UpdatePhoto)).Methods(http.MethodPut)
+	s.Router.Path("/photo").HandlerFunc(request.PreRequest(handler.DeletePhoto)).Methods(http.MethodDelete)
+
 }

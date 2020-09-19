@@ -122,5 +122,49 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 	ret, _ := json.Marshal(u)
 	_, _ = w.Write(ret)
-
 }
+
+func UpdatePhoto(w http.ResponseWriter, r *http.Request) {
+	i := r.Context().Value(request.ContextKey).(*tracer.Infos)
+	i.TraceIt(spanName)
+	defer i.Span.Finish()
+
+	email := r.Header.Get("X-Consumer-Username")
+
+	err := r.ParseMultipartForm(10 << 20)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = w.Write([]byte(`{"msg": "The image sent is bigger than 10mb"}`))
+	}
+
+	file, _, err := r.FormFile("photo")
+	if err != nil {
+		i.Span.SetTag("getting form file", http.StatusInternalServerError)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer file.Close()
+
+	err = userService.UpdateImage(i, email, file)
+	if err != nil {
+		i.Span.SetTag("updating image", http.StatusInternalServerError)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+}
+
+func DeletePhoto(w http.ResponseWriter, r *http.Request) {
+	i := r.Context().Value(request.ContextKey).(*tracer.Infos)
+	i.TraceIt(spanName)
+	defer i.Span.Finish()
+
+	email := r.Header.Get("X-Consumer-Username")
+
+	err := userService.ErasePhoto(i, email)
+	if err != nil {
+		i.Span.SetTag("getting form file", http.StatusInternalServerError)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+}
+
