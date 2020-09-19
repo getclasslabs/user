@@ -1,10 +1,11 @@
 package internal
 
 import (
+	"net/http"
+
 	"github.com/getclasslabs/go-tools/pkg/request"
 	"github.com/getclasslabs/user/internal/handler"
 	"github.com/gorilla/mux"
-	"net/http"
 )
 
 type Server struct {
@@ -33,4 +34,8 @@ func (s *Server) serve() {
 	s.Router.Path("/u/{nickname}").HandlerFunc(request.PreRequest(handler.GetUser)).Methods(http.MethodPost)
 
 	s.Router.Path("/search/teacher").HandlerFunc(request.PreRequest(handler.SearchTeacher)).Methods(http.MethodGet)
+
+	s.Router.Path("/photo").HandlerFunc(request.PreRequest(handler.UpdatePhoto)).Methods(http.MethodPut)
+	s.Router.Path("/photo").HandlerFunc(request.PreRequest(handler.DeletePhoto)).Methods(http.MethodDelete)
+
 }
