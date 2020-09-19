@@ -12,7 +12,7 @@ func Get(i *tracer.Infos, nickname string) (map[string]interface{}, error) {
 	uRepo := repository.NewUser()
 
 	user, err := uRepo.GetUserByNick(i, nickname)
-	if err != nil{
+	if err != nil {
 		i.LogError(err)
 		return nil, err
 	}

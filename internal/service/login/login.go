@@ -17,7 +17,7 @@ func (l *Login) Do(i *tracer.Infos) (map[string]interface{}, error) {
 
 	uRepo := repository.NewUser()
 	result, err := uRepo.GetUserByEmail(i, l.Email)
-	if err != nil{
+	if err != nil {
 		//TODO treat
 		return nil, err
 	}

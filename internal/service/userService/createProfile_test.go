@@ -8,9 +8,9 @@ import (
 
 func TestProfile_removeAccents(t *testing.T) {
 	tests := []struct {
-		name   string
-		s   string
-		want   string
+		name string
+		s    string
+		want string
 	}{
 		{
 			"[removeAccent] Name with accent",
@@ -41,13 +41,13 @@ func TestProfile_createNick(t *testing.T) {
 	tests := []struct {
 		name   string
 		fields fields
-		want string
+		want   string
 	}{
 		{
 			"[createNick] Name 1",
 			fields{
 				FirstName: "André",
-				LastName: "Gaspar",
+				LastName:  "Gaspar",
 			},
 			"andre.gaspar",
 		},
@@ -55,7 +55,7 @@ func TestProfile_createNick(t *testing.T) {
 			"[createNick] Name 2",
 			fields{
 				FirstName: "Matheus",
-				LastName: "Melo",
+				LastName:  "Melo",
 			},
 			"matheus.melo",
 		},
@@ -63,7 +63,7 @@ func TestProfile_createNick(t *testing.T) {
 			"[createNick] Name 3",
 			fields{
 				FirstName: "VarÍlão",
-				LastName: "Truta",
+				LastName:  "Truta",
 			},
 			"varilao.truta",
 		},
@@ -71,7 +71,7 @@ func TestProfile_createNick(t *testing.T) {
 			"[createNick] Name 4",
 			fields{
 				FirstName: "Ana Julia",
-				LastName: "Gaspar",
+				LastName:  "Gaspar",
 			},
 			"anajulia.gaspar",
 		},

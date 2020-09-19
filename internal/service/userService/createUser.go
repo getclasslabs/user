@@ -27,7 +27,7 @@ func (c *CreateUserService) Do(i *tracer.Infos) (string, error) {
 	uRepo := repository.NewUser()
 
 	err = uRepo.SaveUser(i, c.Email, pass)
-	if err != nil{
+	if err != nil {
 		i.LogError(err)
 		return "", err
 	}

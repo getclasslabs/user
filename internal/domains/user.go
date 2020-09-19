@@ -4,6 +4,11 @@ import (
 	"github.com/getclasslabs/user/internal/repository"
 )
 
+const (
+	StudentRegister = 0
+	TeacherRegister = 1
+)
+
 type User struct {
 	Domain
 	FirstName   string

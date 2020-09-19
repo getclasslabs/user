@@ -80,6 +80,6 @@ func NewDbError(from interface{}, query string, err error) error {
 		Database,
 		"Some information is wrong",
 		map[string]interface{}{
-		"query":         query,
-	})
+			"query": query,
+		})
 }

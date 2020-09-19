@@ -23,7 +23,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	result, err := loginService.Do(i)
 
-
 	ret, _ := json.Marshal(result)
 	_, _ = w.Write(ret)
 
