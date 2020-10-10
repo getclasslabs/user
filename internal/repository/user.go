@@ -70,13 +70,12 @@ func (u *User) GetUserByEmail(i *tracer.Infos, email string) (map[string]interfa
 
 	q := "SELECT " +
 		"password, " +
+		"email, " +
 		"nickname, " +
 		"first_name, " +
 		"last_name, " +
-		"register, " +
-		"gender, " +
-		"photo_path " +
-		"FROM users " +
+		"register " +
+		"FROM users u " +
 		"WHERE " +
 		"email = ?"
 
@@ -96,12 +95,26 @@ func (u *User) GetUserByNick(i *tracer.Infos, nickname string) (map[string]inter
 
 	q := "SELECT " +
 		"	password, " +
+		"	email," +
+		"	birthDate, " +
 		"	nickname, " +
 		"	first_name, " +
 		"	last_name, " +
 		"	register, " +
-		"	gender " +
-		"FROM users " +
+		"	gender, " +
+		"	photo_path," +
+		"	twitter," +
+		"	facebook," +
+		"	instagram," +
+		"	description," +
+		"	telephone," +
+		"	address," +
+		"	formation," +
+		"	specialization," +
+		"	working_time " +
+		"FROM users u " +
+		"LEFT JOIN teacher t ON t.user_id = u.id " +
+		"LEFT JOIN students s ON s.user_id = u.id " +
 		"WHERE " +
 		"	nickname = ?"
 
@@ -123,8 +136,8 @@ func (u *User) Edit(i *tracer.Infos, email, nickname, firstName, lastName, birth
 	q := "UPDATE users SET " +
 		"nickname = ?, " +
 		"gender = ?, " +
-		"firstName = ?, " +
-		"lastName = ?, " +
+		"first_name = ?, " +
+		"last_name = ?, " +
 		"birthDate = ?, " +
 		"twitter = ?, " +
 		"facebook = ?, " +

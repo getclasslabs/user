@@ -31,7 +31,7 @@ func (s *Server) serve() {
 
 	s.Router.Path("/login").HandlerFunc(request.PreRequest(handler.Login)).Methods(http.MethodPost)
 
-	s.Router.Path("/u/{nickname}").HandlerFunc(request.PreRequest(handler.GetUser)).Methods(http.MethodPost)
+	s.Router.Path("/u/{nickname}").HandlerFunc(request.PreRequest(handler.GetUser)).Methods(http.MethodGet)
 
 	s.Router.Path("/search/teacher").HandlerFunc(request.PreRequest(handler.SearchTeacher)).Methods(http.MethodGet)
 
