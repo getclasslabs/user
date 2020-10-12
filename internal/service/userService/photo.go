@@ -11,32 +11,34 @@ import (
 	"io/ioutil"
 	"mime/multipart"
 	"os"
-	"strings"
+	"strconv"
+	"time"
 )
 
-func UpdateImage(i *tracer.Infos, email string, file multipart.File) error {
+func UpdateImage(i *tracer.Infos, email string, file multipart.File) (string, error) {
 	i.TraceIt("updating photo")
 	defer i.Span.Finish()
 
-	name := strings.Split(email, "@")[0]
+	now := time.Now()      // current local time
+	name := strconv.Itoa(int(now.Unix())) + ".png"
 
-	photoFile, err := os.Create("./user_photos/" + name + ".png")
+	photoFile, err := os.Create("./user_photos/" + name)
 	if err != nil {
 		i.LogError(err)
-		return err
+		return "", err
 	}
 	defer photoFile.Close()
 
 	fileBytes, err := ioutil.ReadAll(file)
 	if err != nil {
 		i.LogError(err)
-		return err
+		return "", err
 	}
 
 	img, _, err := image.Decode(bytes.NewReader(fileBytes))
 	if err != nil {
 		i.LogError(err)
-		return err
+		return "", err
 	}
 
 	resized := imaging.Resize(img, 200, 200, imaging.Lanczos)
@@ -48,17 +50,17 @@ func UpdateImage(i *tracer.Infos, email string, file multipart.File) error {
 	err = enc.Encode(photoFile, resized)
 	if err != nil{
 		i.LogError(err)
-		return err
+		return "", err
 	}
 
 	uRepo := repository.NewUser()
-	err = uRepo.UpdatePhoto(i, email, photoFile.Name())
+	err = uRepo.UpdatePhoto(i, email, name)
 	if err != nil{
 		i.LogError(err)
-		return err
+		return "", err
 	}
 
-	return nil
+	return name, nil
 }
 
 func ErasePhoto(i *tracer.Infos, email string) error {
@@ -83,7 +85,7 @@ func ErasePhoto(i *tracer.Infos, email string) error {
 	}
 
 	//The file could not be removed but the register was updated, must remove manually
-	err = os.Remove(filename)
+	err = os.Remove("./user_photos/" + filename)
 	if err != nil{
 		i.LogError(err)
 	}

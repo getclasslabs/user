@@ -71,7 +71,8 @@ func (u *User) GetUserByEmail(i *tracer.Infos, email string) (map[string]interfa
 	q := "SELECT " +
 		"password, " +
 		"email, " +
-		"nickname, " +
+		"nickname," +
+		"photo_path, " +
 		"first_name, " +
 		"last_name, " +
 		"register " +

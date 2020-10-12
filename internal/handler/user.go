@@ -145,12 +145,19 @@ func UpdatePhoto(w http.ResponseWriter, r *http.Request) {
 	}
 	defer file.Close()
 
-	err = userService.UpdateImage(i, email, file)
+	imageName, err := userService.UpdateImage(i, email, file)
 	if err != nil {
 		i.Span.SetTag("updating image", http.StatusInternalServerError)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	resp := map[string]string{
+		"image": imageName,
+	}
+
+	ret, _ := json.Marshal(resp)
+	_, _ = w.Write(ret)
 }
 
 func DeletePhoto(w http.ResponseWriter, r *http.Request) {
