@@ -59,22 +59,28 @@ func (t *Teacher) Edit(i *tracer.Infos, email string, formation string, speciali
 	return nil
 }
 
-func (t *Teacher) GetTeacherByPhoneticName(i *tracer.Infos, name string) (map[string]interface{}, error) {
+func (t *Teacher) GetTeacherByPhoneticName(i *tracer.Infos, name string, offset, limit int) ([]map[string]interface{}, error) {
 	i.TraceIt(t.traceName)
 	defer i.Span.Finish()
 
 	q := "SELECT " +
 		"       u.first_name, " +
 		"       u.last_name, " +
-		"       u.nickname, " +
+		"       u.nickname," +
+		"		u.photo_path," +
+		"		u.description, " +
 		"       t.formation " +
 		"FROM users u " +
 		"INNER JOIN teacher t on u.id = t.user_id  " +
 		"WHERE " +
-		"      u.register = 0 AND " +
+		"      u.register = 1 AND " +
 		"      (soundex(u.first_name) = soundex(?) OR " +
-		"       soundex(u.last_name) = soundex(?))"
-	result, err := t.db.Get(i, q, name, name)
+		"       soundex(u.last_name) = soundex(?)) OR " +
+		"		? LIKE CONCAT('%', u.first_name, '%') OR " +
+		"		? LIKE CONCAT('%', u.last_name, '%') " +
+		"LIMIT ? " +
+		"OFFSET ?"
+	result, err := t.db.Fetch(i, q, name, name, name, name, limit, offset)
 
 	if err != nil {
 		err := customerror.NewDbError(t, q, err)

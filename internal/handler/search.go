@@ -18,6 +18,7 @@ func SearchTeacher(w http.ResponseWriter, r *http.Request) {
 	defer i.Span.Finish()
 
 	name := r.URL.Query().Get("name")
+	page := r.URL.Query().Get("page")
 
 	if name == "" {
 		i.Span.SetTag("no name", http.StatusBadRequest)
@@ -25,7 +26,11 @@ func SearchTeacher(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result, err := search.Teacher(i, name)
+	if page == "" {
+		page = "1"
+	}
+
+	result, err := search.Teacher(i, name, page)
 	if err != nil {
 		switch err.(type) {
 		case customerror.CustomError:
@@ -42,7 +47,7 @@ func SearchTeacher(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(result) == 0{
-		w.WriteHeader(http.StatusNotFound)
+		w.WriteHeader(http.StatusNoContent)
 		return
 	}
 
