@@ -75,12 +75,11 @@ func (t *Teacher) GetTeacherByPhoneticName(i *tracer.Infos, name string, offset,
 		"WHERE " +
 		"      u.register = 1 AND " +
 		"      (soundex(u.first_name) = soundex(?) OR " +
-		"       soundex(u.last_name) = soundex(?)) OR " +
-		"		? LIKE CONCAT('%', u.first_name, '%') OR " +
-		"		? LIKE CONCAT('%', u.last_name, '%') " +
+		"       soundex(u.last_name) = soundex(?) OR " +
+		"		soundex(CONCAT(u.first_name, ' ', u.last_name)) = soundex(?)) " +
 		"LIMIT ? " +
 		"OFFSET ?"
-	result, err := t.db.Fetch(i, q, name, name, name, name, limit, offset)
+	result, err := t.db.Fetch(i, q, name, name, name, limit, offset)
 
 	if err != nil {
 		err := customerror.NewDbError(t, q, err)

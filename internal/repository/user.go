@@ -75,8 +75,12 @@ func (u *User) GetUserByEmail(i *tracer.Infos, email string) (map[string]interfa
 		"photo_path, " +
 		"first_name, " +
 		"last_name, " +
-		"register " +
+		"register, " +
+		"t.id as teacher_id, " +
+		"s.id as student_id " +
 		"FROM users u " +
+		"LEFT JOIN teacher t ON t.user_id = u.id " +
+		"LEFT JOIN students s ON s.user_id = u.id " +
 		"WHERE " +
 		"email = ?"
 
@@ -112,7 +116,9 @@ func (u *User) GetUserByNick(i *tracer.Infos, nickname string) (map[string]inter
 		"	address," +
 		"	formation," +
 		"	specialization," +
-		"	working_time " +
+		"	working_time, " +
+		"	t.id as teacher_id, " +
+		"	s.id as student_id " +
 		"FROM users u " +
 		"LEFT JOIN teacher t ON t.user_id = u.id " +
 		"LEFT JOIN students s ON s.user_id = u.id " +
