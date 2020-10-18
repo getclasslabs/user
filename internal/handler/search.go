@@ -46,7 +46,7 @@ func SearchTeacher(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if len(result) == 0{
+	if len(result["results"].([]map[string]interface{})) == 0{
 		w.WriteHeader(http.StatusNoContent)
 		return
 	}

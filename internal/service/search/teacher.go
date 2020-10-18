@@ -7,21 +7,35 @@ import (
 	"strconv"
 )
 
-func Teacher(i *tracer.Infos, name, page string) ([]map[string]interface{}, error) {
+func Teacher(i *tracer.Infos, name, page string) (map[string]interface{}, error) {
 	tRepo := repository.NewTeacher()
-
 	limit := config.Config.SearchLimit
 
 	pageNumber, err := strconv.Atoi(page)
-	if err != nil {
+	if err != nil || pageNumber < 0 {
 		pageNumber = 1
 	}
-	offset := (pageNumber - 1) * limit
 
-	teachers, err := tRepo.GetTeacherByPhoneticName(i, name, offset, limit)
+	teachers, err := tRepo.GetTeacherByPhoneticName(i, name, pageNumber)
 	if err != nil {
 		return nil, err
 	}
 
-	return teachers, err
+	next, err := tRepo.GetNextPageTeacher(i, name)
+	if err != nil {
+		return nil, err
+	}
+
+	hasNextCount := (pageNumber * limit) + 1
+	var hasNext bool
+	if len(next) > 0 && next["count"].(int64) >= int64(hasNextCount)  {
+		hasNext = true
+	} else {
+		hasNext = false
+	}
+
+	return map[string]interface{}{
+		"next": hasNext,
+		"results": teachers,
+	}, err
 }

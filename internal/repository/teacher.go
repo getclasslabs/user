@@ -3,6 +3,7 @@ package repository
 import (
 	"github.com/getclasslabs/go-tools/pkg/db"
 	"github.com/getclasslabs/go-tools/pkg/tracer"
+	"github.com/getclasslabs/user/internal/config"
 	"github.com/getclasslabs/user/internal/customerror"
 )
 
@@ -59,9 +60,12 @@ func (t *Teacher) Edit(i *tracer.Infos, email string, formation string, speciali
 	return nil
 }
 
-func (t *Teacher) GetTeacherByPhoneticName(i *tracer.Infos, name string, offset, limit int) ([]map[string]interface{}, error) {
+func (t *Teacher) GetTeacherByPhoneticName(i *tracer.Infos, name string, page int) ([]map[string]interface{}, error) {
 	i.TraceIt(t.traceName)
 	defer i.Span.Finish()
+
+	limit := config.Config.SearchLimit
+	offset := (page - 1) * limit
 
 	q := "SELECT " +
 		"       u.first_name, " +
@@ -80,6 +84,30 @@ func (t *Teacher) GetTeacherByPhoneticName(i *tracer.Infos, name string, offset,
 		"LIMIT ? " +
 		"OFFSET ?"
 	result, err := t.db.Fetch(i, q, name, name, name, limit, offset)
+
+	if err != nil {
+		err := customerror.NewDbError(t, q, err)
+		i.LogError(err)
+		return nil, err
+	}
+	return result, nil
+}
+
+
+func (t *Teacher) GetNextPageTeacher(i *tracer.Infos, name string) (map[string]interface{}, error) {
+	i.TraceIt(t.traceName)
+	defer i.Span.Finish()
+
+	q := "SELECT " +
+		"       count(u.id) as count " +
+		"FROM users u " +
+		"INNER JOIN teacher t on u.id = t.user_id  " +
+		"WHERE " +
+		"      u.register = 1 AND " +
+		"      (soundex(u.first_name) = soundex(?) OR " +
+		"       soundex(u.last_name) = soundex(?) OR " +
+		"		soundex(CONCAT(u.first_name, ' ', u.last_name)) = soundex(?)) "
+	result, err := t.db.Get(i, q, name, name, name)
 
 	if err != nil {
 		err := customerror.NewDbError(t, q, err)
