@@ -20,3 +20,6 @@ mysql:
   user: root
   password:
   database: userdb
+
+#Search
+search_limit: 10

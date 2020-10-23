@@ -31,11 +31,16 @@ func (s *Server) serve() {
 
 	s.Router.Path("/login").HandlerFunc(request.PreRequest(handler.Login)).Methods(http.MethodPost)
 
-	s.Router.Path("/u/{nickname}").HandlerFunc(request.PreRequest(handler.GetUser)).Methods(http.MethodPost)
+	s.Router.Path("/review").HandlerFunc(request.PreRequest(handler.Review)).Methods(http.MethodPost)
+	s.Router.Path("/review/{teacher}").HandlerFunc(request.PreRequest(handler.GetReviews)).Methods(http.MethodGet)
+
+	s.Router.Path("/u/{nickname}").HandlerFunc(request.PreRequest(handler.GetUser)).Methods(http.MethodGet)
 
 	s.Router.Path("/search/teacher").HandlerFunc(request.PreRequest(handler.SearchTeacher)).Methods(http.MethodGet)
 
 	s.Router.Path("/photo").HandlerFunc(request.PreRequest(handler.UpdatePhoto)).Methods(http.MethodPut)
 	s.Router.Path("/photo").HandlerFunc(request.PreRequest(handler.DeletePhoto)).Methods(http.MethodDelete)
 
+	s.Router.PathPrefix("/images/").Handler(http.StripPrefix("/images/",
+		http.FileServer(http.Dir("./user_photos/"))))
 }
