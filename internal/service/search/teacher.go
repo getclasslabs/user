@@ -8,6 +8,10 @@ import (
 )
 
 func Teacher(i *tracer.Infos, name, page string) (map[string]interface{}, error) {
+	i.TraceIt("search")
+	defer i.Span.Finish()
+
+
 	tRepo := repository.NewTeacher()
 	limit := config.Config.SearchLimit
 

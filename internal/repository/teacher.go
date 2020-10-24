@@ -116,3 +116,28 @@ func (t *Teacher) GetNextPageTeacher(i *tracer.Infos, name string) (map[string]i
 	}
 	return result, nil
 }
+
+func (t *Teacher) GetTeacherById(i *tracer.Infos, id int) (map[string]interface{}, error) {
+	i.TraceIt(t.traceName)
+	defer i.Span.Finish()
+
+	q := "SELECT " +
+		"	u.first_name, " +
+		"	u.last_name, " +
+		"	u.nickname," +
+		"	u.photo_path," +
+		"	u.description, " +
+		"	t.formation " +
+		"FROM users u " +
+		"INNER JOIN teacher t on u.id = t.user_id  " +
+		"WHERE " +
+		"    t.id = ?"
+	result, err := t.db.Get(i, q, id)
+
+	if err != nil {
+		err := customerror.NewDbError(t, q, err)
+		i.LogError(err)
+		return nil, err
+	}
+	return result, nil
+}
