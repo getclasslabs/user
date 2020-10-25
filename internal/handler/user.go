@@ -194,7 +194,7 @@ func ChangePassword(w http.ResponseWriter, r *http.Request) {
 	}
 
 	changePassword.Email = email
-	if changePassword.Validate(i){
+	if !changePassword.Validate(i){
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
