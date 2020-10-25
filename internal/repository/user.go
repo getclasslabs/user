@@ -99,7 +99,6 @@ func (u *User) GetUserByNick(i *tracer.Infos, nickname string) (map[string]inter
 	defer i.Span.Finish()
 
 	q := "SELECT " +
-		"	password, " +
 		"	email," +
 		"	birthDate, " +
 		"	nickname, " +
@@ -187,6 +186,24 @@ func (u *User) UpdatePhoto(i *tracer.Infos, email, path string) error {
 		"	email = ?"
 
 	_, err := u.db.Update(i, q, path, email)
+	if err != nil {
+		err := customerror.NewDbError(u, q, err)
+		i.LogError(err)
+		return err
+	}
+	return nil
+}
+
+func (u *User) ChangePassword(i *tracer.Infos, email, password string) error {
+	i.TraceIt(traceName)
+	defer i.Span.Finish()
+
+	q := "UPDATE users SET " +
+		"	password = ? " +
+		"WHERE " +
+		"	email = ?"
+
+	_, err := u.db.Update(i, q, password, email)
 	if err != nil {
 		err := customerror.NewDbError(u, q, err)
 		i.LogError(err)

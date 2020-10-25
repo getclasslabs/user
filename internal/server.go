@@ -26,6 +26,8 @@ func (s *Server) serve() {
 	s.Router.Path("/heartbeat").HandlerFunc(request.PreRequest(handler.Heartbeat)).Methods(http.MethodGet)
 	s.Router.Path("/create").HandlerFunc(request.PreRequest(handler.CreateUser)).Methods(http.MethodPost)
 	s.Router.Path("/profile").HandlerFunc(request.PreRequest(handler.CreateProfile)).Methods(http.MethodPut)
+	s.Router.Path("/password").HandlerFunc(request.PreRequest(handler.ChangePassword)).Methods(http.MethodPut)
+
 
 	s.Router.Path("/edit").HandlerFunc(request.PreRequest(handler.EditProfile)).Methods(http.MethodPut)
 
@@ -40,6 +42,8 @@ func (s *Server) serve() {
 
 	s.Router.Path("/photo").HandlerFunc(request.PreRequest(handler.UpdatePhoto)).Methods(http.MethodPut)
 	s.Router.Path("/photo").HandlerFunc(request.PreRequest(handler.DeletePhoto)).Methods(http.MethodDelete)
+
+	s.Router.Path("/teacher/{id}").HandlerFunc(request.PreRequest(handler.SearchTeacherById)).Methods(http.MethodGet)
 
 	s.Router.PathPrefix("/images/").Handler(http.StripPrefix("/images/",
 		http.FileServer(http.Dir("./user_photos/"))))

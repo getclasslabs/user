@@ -175,3 +175,35 @@ func DeletePhoto(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func ChangePassword(w http.ResponseWriter, r *http.Request) {
+	i := r.Context().Value(request.ContextKey).(*tracer.Infos)
+	i.TraceIt(spanName)
+	defer i.Span.Finish()
+
+	email := r.Header.Get("X-Consumer-Username")
+
+	changePassword := userService.ChangePassword{}
+	err := json.NewDecoder(r.Body).Decode(&changePassword)
+	if err != nil{
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if changePassword.NewPassword != changePassword.NewPasswordConfirmation {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	changePassword.Email = email
+	if changePassword.Validate(i){
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	err = changePassword.Do(i)
+	if err != nil{
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+}
+
