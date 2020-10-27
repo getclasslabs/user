@@ -22,7 +22,7 @@ func (s *Student) Create(i *tracer.Infos, userEmail string) error {
 	i.TraceIt(s.traceName)
 	defer i.Span.Finish()
 
-	q := "INSERT INTO student(user_id) SELECT id from users where email = ? "
+	q := "INSERT INTO students(user_id) SELECT id from users where email = ? "
 	_, err := s.db.Insert(i, q, userEmail)
 
 	if err != nil {
