@@ -99,6 +99,7 @@ func (u *User) GetUserByNick(i *tracer.Infos, nickname string) (map[string]inter
 	defer i.Span.Finish()
 
 	q := "SELECT " +
+		"	u.id," +
 		"	email," +
 		"	birthDate, " +
 		"	nickname, " +
