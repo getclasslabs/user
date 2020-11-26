@@ -41,8 +41,12 @@ func (r *Review) GetReviewsByTeacherId(i *tracer.Infos, teacherId string) ([]map
 
 	q := "SELECT " +
 		"       r.comment, " +
-		"       r.value " +
+		"       r.value," +
+		"		u.first_name," +
+		"		u.last_name " +
 		"FROM reviews r " +
+		"INNER JOIN students s ON r.student_id = s.id " +
+		"INNER JOIN users u ON s.user_id = u.id " +
 		"WHERE " +
 		"      r.teacher_id = ? " +
 		"ORDER BY r.id DESC "

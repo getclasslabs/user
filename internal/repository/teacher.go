@@ -122,6 +122,7 @@ func (t *Teacher) GetTeacherById(i *tracer.Infos, id int) (map[string]interface{
 	defer i.Span.Finish()
 
 	q := "SELECT " +
+		"	u.id, " +
 		"	u.first_name, " +
 		"	u.last_name, " +
 		"	u.nickname," +
